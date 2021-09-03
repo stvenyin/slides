@@ -16,7 +16,11 @@ const sleep = ms => new Promise(resolve => setTimeout(resolve, ms));
 
 const connectSubstrate = async () => {
   const wsProvider = new WsProvider(WEB_SOCKET);
-  const api = await ApiPromise.create({ provider: wsProvider, types: {} });
+  const api = await ApiPromise.create({ provider: wsProvider, types: {
+    KittyIndex: 'u64',
+    id: Hash,
+    dna: Hash,
+  } });
   return api;
 };
 
