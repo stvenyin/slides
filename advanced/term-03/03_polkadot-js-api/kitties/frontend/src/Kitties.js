@@ -19,9 +19,29 @@ export default function Kitties (props) {
     //   - 共有多少只猫咪
     //   - 每只猫咪的主人是谁
     //   - 每只猫咪的 DNA 是什么，用来组合出它的形态
+
+    let unsubscribe
+    api.query.kittiesModule.kittiesCount(cnt => {
+      if (cnt !== '') {
+        // The amounts of all kitties.
+        const kittyIds = Array.from(Array(parseInt(cnt, 10)), (v, k) => k)
+        // The owners of all kitties.
+        api.query.kittiesModule.owner.multi(kittyIds, kittyOwners => {
+          setKittyOwners(kittyOwners)
+        }).catch(console.error)
+        // The DNAs of all kitties.
+        api.query.kittiesModule.kitties.multi(kittyIds, kittyDna => {
+          setKittyDNAs(kittyDna)
+        }).catch(console.error)
+      }
+    }).then(unsub => {
+      unsubscribe = unsub
+    }).catch(console.error)
+
+    return () => unsubscribe && unsubscribe()
   }
 
-  const populateKitties = () => {
+   const populateKitties = () => {
     // TODO: 在这里添加额外的逻辑。你需要组成这样的数组结构：
     //  ```javascript
     //  const kitties = [{
@@ -31,12 +51,20 @@ export default function Kitties (props) {
     //  }, { id: ..., dna: ..., owner: ... }]
     //  ```
     // 这个 kitties 会传入 <KittyCards/> 然后对每只猫咪进行处理
+
     const kitties = []
+    for (let i = 0; i < kittyDNAs.length; ++i) {
+      const kitty = {}
+      kitty.id = i
+      kitty.dna = kittyDNAs[i].unwrap()
+      kitty.owner = keyring.encodeAddress(kittyOwners[i].unwrap())
+      kitties[i] = kitty
+    }
     setKitties(kitties)
   }
 
   useEffect(fetchKitties, [api, keyring])
-  useEffect(populateKitties, [])
+  useEffect(populateKitties, [keyring, kittyDNAs, kittyOwners])
 
   return <Grid.Column width={16}>
     <h1>小毛孩</h1>
