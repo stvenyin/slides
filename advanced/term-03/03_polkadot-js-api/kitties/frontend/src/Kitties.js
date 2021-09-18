@@ -10,12 +10,12 @@ export default function Kitties (props) {
   const { api, keyring } = useSubstrate()
   const { accountPair } = props
 
- const [kitties, setKitties] = useState([])
- const [status, setStatus] = useState('')
- // Kitties' DNAs
- const [kittyDNAs, setKittyDNAs] = useState([])
- // Kitties' Owners
- const [kittyOwners, setKittyOwners] = useState([])
+  const [kitties, setKitties] = useState([])
+  const [status, setStatus] = useState('')
+  // Kitties' DNAs
+  const [kittyDNAs, setKittyDNAs] = useState([])
+  // Kitties' Owners
+  const [kittyOwners, setKittyOwners] = useState([])
 
   const fetchKitties = () => {
     // TODO: 在这里调用 `api.query.kittiesModule.*` 函数去取得猫咪的信息。
@@ -45,7 +45,7 @@ export default function Kitties (props) {
     return () => unsubscribe && unsubscribe()
   }
 
-   const populateKitties = () => {
+  const populateKitties = () => {
     // TODO: 在这里添加额外的逻辑。你需要组成这样的数组结构：
     //  ```javascript
     //  const kitties = [{
